@@ -58,29 +58,77 @@ rdist <- 10/length(harvest)
 
 
 bfast.reccusum <- function() {
-  bfast(harvest,h=rdist, type="Rec-CUSUM", season="harmonic", max.iter=1)
+  x = bfast(harvest,h=rdist, type="Rec-CUSUM", season="harmonic", max.iter=1)
+  return(list(x$magnitude, x$Time, x$output[[1]]$ci.Vt, x$output[[1]]$bp.Vt$breakpoints, x$output[[1]]$ci.Vt$confint, x$nobp))
 }
 
 bfast.olscusum <- function() {
-  bfast(harvest,h=rdist, type="OLS-CUSUM", season="harmonic", max.iter = 1)
+  x = bfast(harvest,h=rdist, type="OLS-CUSUM", season="harmonic", max.iter = 1)
+  return(list(x$magnitude, x$Time, x$output[[1]]$ci.Vt, x$output[[1]]$bp.Vt$breakpoints, x$output[[1]]$ci.Vt$confint, x$nobp))
 }
 
 bfast.olsmosum <- function() {
-  bfast(harvest,h=rdist, type="OLS-MOSUM", season="harmonic", max.iter = 1)
+  x = bfast(harvest,h=rdist, type="OLS-MOSUM", season="harmonic", max.iter = 1)
+  return(list(x$magnitude, x$Time, x$output[[1]]$ci.Vt, x$output[[1]]$bp.Vt$breakpoints, x$output[[1]]$ci.Vt$confint, x$nobp))
 }
 
 bfast.recmosum <- function() {
-  bfast(harvest,h=rdist, type="Rec-MOSUM", season="harmonic", max.iter = 1)
+  x = bfast(harvest,h=rdist, type="Rec-MOSUM", season="harmonic", max.iter = 1)
+  return(list(x$magnitude, x$Time, x$output[[1]]$ci.Vt, x$output[[1]]$bp.Vt$breakpoints, x$output[[1]]$ci.Vt$confint, x$nobp))
 }
 
 test.recresid <- function() {
-  set.seed(1111)
-  n <- 2000
-  p <- 7
-  X <- cbind(1,matrix(rnorm(n * p), n, p))
-  y <- rnorm(n)
-  
-  recresid.default(x = X,y=y)
+	set.seed(1111)
+ 
+	# random data with intercept as the only regressor
+	test.interceptonly <- function() {
+	  y <- rnorm(300) + rep(c(0, 2), each = 150)
+	  x <- matrix(rep(1, length(y),length(y),1))
+	  return(recresid.default(x,y, start = ncol(x) + 1, end = nrow(x), tol = sqrt(.Machine$double.eps)/ncol(x)))
+	}
+
+	# random data with p regressors
+	test.model1 <- function() {
+	  n <- 500
+	  p <- 4
+	  x <- cbind(1,matrix(rnorm(n * p), n, p)) # with intercept!
+	  y <- rnorm(n)
+	  return(recresid.default(x,y, start = ncol(x) + 1, end = nrow(x), tol = sqrt(.Machine$double.eps)/ncol(x)))
+	}
+
+	# generate random dummy variables by sampling from {0,1} and add an intercept
+	test.dummy1 <- function() {
+	  n <- 300
+	  p <- 3
+	  x <- matrix(0, n, p)
+	  x[,1] = 1
+	  x[,2:p] =  sample(c(0,1),size=n*(p-1), replace = T)
+	  
+	  y <- rnorm(n) + (x %*% c(1:p)) 
+	  return(recresid.default(x,y, start = ncol(x) + 1, end = nrow(x), tol = sqrt(.Machine$double.eps)/ncol(x)))
+	}
+
+	# multicollinearity: generate a 1 column (intercept) and a 2nd random column, further columns are multiples of the second column
+	# this is a worst case scenario, the model will stay rank deficient for all iterations, i.e. recresid
+	# will never set check to FALSE and will thus always fit a model in R. Due to some overhead in the computations and calling
+	# R from C++, the original R implementation might be slightly faster here.
+	test.poor1 <- function() {
+	  n <- 300
+	  p <- 3 # must be larger than 2
+	  x <- matrix(0, n, 2) 
+	  x[,1] = 1
+	  x[,2] = rnorm(n,5,1)
+	  for (i in 3:p) {
+		x <- cbind(x,i*x[,2]) # intercept add columns that are multiples of the 2nd column 
+	  }
+	  y <- rnorm(n) + (x %*% c(1:p)) 
+	  return(recresid.default(x,y, start = ncol(x) + 1, end = nrow(x), tol = sqrt(.Machine$double.eps)/ncol(x)))
+	}
+
+	return(list(test.interceptonly(),
+				test.model1(),
+				test.dummy1(),
+				test.poor1()))
 }
 
 
