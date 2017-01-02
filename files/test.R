@@ -15,6 +15,33 @@ bfastmonitor.hist.roc <- function() {
        x$magnitude)
 }
 
+
+
+bfastmonitor.olscusum <- function() {
+  x = bfastmonitor(NDVIa, start = c(2010, 13),history = "ROC", type="OLS-CUSUM",formula = response ~ trend + harmon,order=3,lag = NULL, slag = NULL)
+  list(x$monitor,
+       x$history,
+       x$breakpoint,
+       x$magnitude)
+}
+
+bfastmonitor.RE <- function() {
+  x = bfastmonitor(NDVIa, start = c(2010, 13),history = "ROC", type="RE",formula = response ~ trend + harmon,order=3,lag = NULL, slag = NULL)
+  list(x$monitor,
+       x$history,
+       x$breakpoint,
+       x$magnitude)
+}
+
+bfastmonitor.ME <- function() {
+  x = bfastmonitor(NDVIa, start = c(2010, 13),history = "ROC", type="ME",formula = response ~ trend + harmon,order=3,lag = NULL, slag = NULL)
+  list(x$monitor,
+       x$history,
+       x$breakpoint,
+       x$magnitude)
+}
+
+
 # history = BP
 bfastmonitor.hist.bp <- function() {
   x = bfastmonitor(NDVIa, start = c(2010, 13),history = "BP", type="OLS-MOSUM",formula = response ~ trend + harmon,order=3,lag = NULL, slag = NULL)

@@ -10,6 +10,21 @@ bfastmonitor.hist.roc <- function() {
 }
 
 
+bfastmonitor.olscusum <- function() {
+  x <- replicate(300,bfastmonitor(NDVIa, start = c(2010, 13),history = "ROC", type="OLS-CUSUM",formula = response ~ trend + harmon,order=3,lag = NULL, slag = NULL), simplify=F)[[1]]
+  return(x)
+}
+
+bfastmonitor.RE <- function() {
+  x <- replicate(300,bfastmonitor(NDVIa, start = c(2010, 13),history = "ROC", type="RE",formula = response ~ trend + harmon,order=3,lag = NULL, slag = NULL), simplify=F)[[1]]
+  return(x)
+}
+
+bfastmonitor.ME <- function() {
+  x <- replicate(300,bfastmonitor(NDVIa, start = c(2010, 13),history = "ROC", type="ME",formula = response ~ trend + harmon,order=3,lag = NULL, slag = NULL), simplify=F)[[1]]
+  return(x)
+}
+
 # history = BP
 bfastmonitor.hist.bp <- function() {
   x <- replicate(5,bfastmonitor(NDVIa, start = c(2010, 13),history = "BP", type="OLS-MOSUM",formula = response ~ trend + harmon,order=3,lag = NULL, slag = NULL), simplify=F)[[1]]
