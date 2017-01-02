@@ -31,6 +31,20 @@ par(cex=0.8)
 barplot(horiz=F,height = t(as.matrix(r[,c("time.old","time.new")])), beside = T, names.arg = r$f, ylab="Computation time (seconds)", legend.text=c("CRAN", "SCALBF"), las=3, args.legend=list(x="topleft"))
 ```
 
+
+```{r, echo=FALSE, results='asis'}
+cat("## Function details\n")
+test.env = new.env()
+invisible(suppressMessages(source("benchmark.R", local = test.env )))
+fs = names(which(sapply(ls(test.env), function(x) {return(class(get(x, envir = test.env)))}) == "function"))
+for (i in 1:length(fs)) {
+    cat(paste("### ", fs[i] ,"\n","```{r}", "\n", sep=""))
+    f <- get(fs[i],envir = test.env)
+    print(f)
+    cat(paste("\n", "```", "\n", sep=""))
+}
+```
+
 ---
 
 

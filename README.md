@@ -8,7 +8,7 @@ A Docker image to evaluate modifications in the R packages [bfast](https://r-for
 
 2. Build the docker image e.g. with `sudo docker build --tag "scalbf_evaluation"  .`
 
-3. Run a container e.g. with `sudo docker run -v $PWD/results:/opt/results scalbf_evaluation`. Sharing the results directory makes sure that results are accessible after completion. This step might take some time.
+3. Run a container e.g. with `sudo docker run --rm -v $PWD/results:/opt/results scalbf_evaluation`. Sharing the results directory makes sure that results are accessible after completion. This step might take some time.
 
 4. New HTML reports `report_test_*.html`,  `report_benchmark_*.html` and `report_profiling_*.html` have been generated in the results directory. These reports contain a comparison of computation times, present achieved speedups, and identify computational bottlenecks respectively.
 

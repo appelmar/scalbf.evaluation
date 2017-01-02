@@ -38,6 +38,8 @@ done
 source github_vars.sh
 
 if [ "$local" = false ] ; then
+    rm -Rf strucchange
+    rm -Rf bfast
     # Install reference versions of strucchange and bfast from github
     git clone $GITHUB_STRUCCHANGE_ORIG && cd strucchange && git reset --hard $COMMIT_STRUCCHANGE_ORIG  &&  echo $( git rev-parse HEAD ) > "/opt/git-strucchange-orig.txt" && cd ..
     git clone $GITHUB_BFAST_ORIG && cd bfast && git reset --hard $COMMIT_BFAST_ORIG  &&  echo $( git rev-parse HEAD ) > "/opt/git-bfast-orig.txt" && cd ..
@@ -81,6 +83,8 @@ Rscript -e 'devtools::install_local("strucchange", args="--preclean", force=T)'
 Rscript -e 'devtools::install_local("bfast", args="--preclean", force=T)'
 
 
+
+
 # Run scripts and store result as a file
 if [ "$testing" = true ] ; then
     Rscript --vanilla run.test.R "/opt/results/test.results.new.rda"
@@ -104,4 +108,7 @@ if [ "$profiling" = true ] ; then
     Rscript --vanilla -e 'rmarkdown::render("report.profiling.Rmd", output_file=paste("report_profiling_", format(Sys.time(),"%Y%m%d-%H%M%S"), ".html", sep=""), output_dir="/opt/results")'
 
 fi
+
+chmod -R 777 /opt/results
+
 
