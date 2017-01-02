@@ -77,10 +77,8 @@ if [ "$local" = false ] ; then
   echo $( git rev-parse HEAD ) > "/opt/git-bfast-mod.txt" && cd ..
 fi
 
-Rscript -e 'devtools::install_local("strucchange", force=T)' 
-Rscript -e 'devtools::install_local("bfast", force=T)'
-
-
+Rscript -e 'devtools::install_local("strucchange", args="--preclean", force=T)' 
+Rscript -e 'devtools::install_local("bfast", args="--preclean", force=T)'
 
 
 # Run scripts and store result as a file
