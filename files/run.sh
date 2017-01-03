@@ -27,12 +27,10 @@ for i in "$@" ; do
     fi
 done
 
-for i in "$@" ; do
-    if [[ $i == "local" ]] ; then
-        local=true
-        break
-    fi
-done
+if [ -d "/opt/pkg" ]; then
+    local=true
+fi
+
 
 # Install strucchange and bfast from original versions
 source github_vars.sh
@@ -77,6 +75,9 @@ if [ "$local" = false ] ; then
   git clone $GITHUB_BFAST_MOD && cd bfast 
   if [ -z ${COMMIT_BFAST_MOD+x} ]; then git reset --hard $COMMIT_BFAST_MOD;  fi
   echo $( git rev-parse HEAD ) > "/opt/git-bfast-mod.txt" && cd ..
+fi
+if [ "$local" = true ] ; then
+    cp -R /opt/pkg/* .
 fi
 
 Rscript -e 'devtools::install_local("strucchange", args="--preclean", force=T)' 

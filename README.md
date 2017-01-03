@@ -21,7 +21,7 @@ The image can be used to
 - profile (identify potential computational bottlenecks)
 
 the packages. By default, all of the three operations each generate an html report using RMarkdown. If you want to perform only one or two 
-of testing, benchmarking, and profiling, you may either change the `CMD` statement in `Dockerfile`, or overriding CMD in `docker run` with e.g. `sudo docker run -v $PWD/results:/opt/results scalbf_evaluation test`
+of testing, benchmarking, and profiling, you may either change the `CMD` statement in `Dockerfile`, or overriding CMD in `docker run` with e.g. `sudo docker run --rm -v $PWD/results:/opt/results scalbf_evaluation test`
 
 
 ### Adding test functions
@@ -32,7 +32,7 @@ The R script files `test.R` and `benchmark.R` contain a set of R functions each.
 If you do not want to compare the latest modifications with the original CRAN versions, you can change `github_vars.sh` and specify hashed commit identifier to use. This can be used e.g. to track the effect on computaiton times of single commits. 
 
 ### Using local package versions
-If you don't want to compare github version, you can copy local package directories `bfast` and `strucchange` to files and add `local` to the `docker run` command.
+If you don't want to compare github version, you can copy local package directories `bfast` and `strucchange` to the `pkg` folder and mount them to `/opt/pkg` in the container:  `sudo docker run --rm -v $PWD/results:/opt/results -v $PWD/pkg:/opt/pkg scalbf_evaluation`
 
 
 ## Dependencies

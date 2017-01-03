@@ -36,5 +36,6 @@ vignettes/*.pdf
 *.rda
 *.Rdata
 results/
+pkg/*
 files/bfast
 files/strucchange
